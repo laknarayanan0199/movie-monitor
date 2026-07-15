@@ -1,0 +1,52 @@
+name: Check Odyssey tickets
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"     # every 15 minutes (UTC; GitHub may add a few minutes of delay)
+  workflow_dispatch: {}         # allows manual "Run workflow" button for testing
+
+concurrency:
+  group: ticket-check
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # to commit state.json back (avoids duplicate alert emails)
+  issues: write     # to open an issue on status change (GitHub emails you about it)
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run ticket check
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+        run: python check_tickets.py --once
+
+      - name: Persist state
+        run: |
+          git config user.name "ticket-monitor-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add state.json
+          git diff --cached --quiet || { git commit -m "update monitor state [skip ci]"; git push; }
+
+      - name: Open GitHub issue on status change
+        if: ${{ hashFiles('alert_message.txt') != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title=$(head -n 1 alert_message.txt)
+          tail -n +2 alert_message.txt > issue_body.txt
+          gh issue create --title "$title" --body-file issue_body.txt
