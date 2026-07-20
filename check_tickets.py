@@ -46,7 +46,7 @@ TARGET_DATE = os.environ.get("TARGET_DATE", "2026-07-24")     # yyyy-mm-dd
 TARGET_TIME = os.environ.get("TARGET_TIME", "07:40 PM")       # as shown on pvrcinemas.com
 MOVIE_KEYWORD = os.environ.get("MOVIE_KEYWORD", "ODYSSEY")
 # Optional: "ENGLISH" or "TAMIL" to match only that version; empty = any language.
-LANGUAGE_FILTER = os.environ.get("LANGUAGE_FILTER", "").strip().upper()
+LANGUAGE_FILTER = os.environ.get("LANGUAGE_FILTER", "ENGLISH").strip().upper()
 
 CHECK_INTERVAL_SECONDS = int(os.environ.get("CHECK_INTERVAL_SECONDS", "900"))
 HEARTBEAT_HOURS = float(os.environ.get("HEARTBEAT_HOURS", "24"))
