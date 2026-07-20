@@ -1,6 +1,6 @@
 """
 Monitor PVR INOX for The Odyssey tickets at INOX Luxe Phoenix Market City,
-Velachery, Chennai (theatreId 320) on 20 July 2026 — 7:40 PM show.
+Velachery, Chennai (theatreId 320) on 24 July 2026 — 7:40 PM show.
 
 Talks directly to the same API the pvrcinemas.com website uses:
   POST https://api3.pvrcinemas.com/api/v1/booking/content/csessions
@@ -42,7 +42,7 @@ except Exception:
 # ------------------------- Configuration (env overridable) -------------------------
 THEATRE_ID = int(os.environ.get("THEATRE_ID", "320"))   # INOX Luxe Phoenix MC, Velachery
 CITY = os.environ.get("CITY", "Chennai")
-TARGET_DATE = os.environ.get("TARGET_DATE", "2026-07-20")     # yyyy-mm-dd
+TARGET_DATE = os.environ.get("TARGET_DATE", "2026-07-24")     # yyyy-mm-dd
 TARGET_TIME = os.environ.get("TARGET_TIME", "07:40 PM")       # as shown on pvrcinemas.com
 MOVIE_KEYWORD = os.environ.get("MOVIE_KEYWORD", "ODYSSEY")
 # Optional: "ENGLISH" or "TAMIL" to match only that version; empty = any language.
